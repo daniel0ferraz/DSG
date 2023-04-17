@@ -1,22 +1,22 @@
 import React from 'react';
-import {Box, HStack, Text} from 'native-base';
+import { Box, HStack, Text } from 'native-base';
 
 import IconLogo from '../../assets/icon-logoDSG.svg';
 import IconAdd from '../../assets/icon-plus.svg';
 import Buttom from '../Buttom';
-import {useNavigation} from '@react-navigation/native';
-import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type HeaderProps = {
   title: string;
   subtitle: string;
 };
 
-export default function Header({title, subtitle}: HeaderProps) {
+export default function Header({ title, subtitle }: HeaderProps) {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   return (
     <>
-      <Box flex={1}>
+      <Box flex={1} >
         <Box mb={21} mt={21}>
           <IconLogo width={47} height={47} />
         </Box>
@@ -32,6 +32,11 @@ export default function Header({title, subtitle}: HeaderProps) {
           </Box>
 
           <Buttom
+            style={{
+              height: 45,
+              width: 110,
+              padding: 5
+            }}
             title="Add tarefa"
             icon={<IconAdd width={8} height={8} />}
             onPress={() => navigation.navigate('AddTask')}

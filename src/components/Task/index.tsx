@@ -43,13 +43,11 @@ export default function Task({ dataTask }: ITaskProps) {
 
   const deleteTask = async () => {
     const realm = await getRealm();
-
     try {
       realm.write(() => {
         realm.delete(realm.objects<ITask>("Task").filtered(`_id = '${dataTask._id}'`))
       })
       Alert.alert("Tarefa Deletada!")
-
     } catch (error) {
       Alert.alert("Não foi possivel deletar tarefa")
       console.log("erro", error)

@@ -12,8 +12,8 @@ type Props = IButtonProps & {
   icon?: any;
 };
 
-export default function Buttom({title, icon, ...rest}: Props) {
-  const {colors} = useTheme();
+export default function Buttom({ title, icon, ...rest }: Props) {
+  const { colors } = useTheme();
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function Buttom({title, icon, ...rest}: Props) {
         bg="#3A49F9"
         width={'50%'}
         borderRadius={60}
-        padding={5}
+
         _pressed={{
           bg: 'blue.100',
         }}
