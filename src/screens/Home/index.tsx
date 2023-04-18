@@ -73,10 +73,13 @@ export default function Home() {
           setTasks(response.filter(data => data.status.includes(cardFilter)));
         }
       } else {
+        setTasks(filterByUser);
         if (cardFilter === 'Total de tarefas') {
-          setTasks(response);
+          setTasks(filterByUser);
         } else {
-          setTasks(response.filter(data => data.status.includes(cardFilter)));
+          setTasks(
+            filterByUser.filter(data => data.status.includes(cardFilter)),
+          );
         }
       }
     } catch (error) {
@@ -112,7 +115,7 @@ export default function Home() {
     switch (index) {
       case 0:
         return 'Total de tarefas';
-        return 'Todas';
+
       case 1:
         return 'Aberto';
       case 2:
@@ -128,8 +131,6 @@ export default function Home() {
   const renderItem = ({item}: any) => {
     return <Card dataCard={item} />;
   };
-
-  console.log('CardFilter', cardFilter);
 
   useFocusEffect(
     useCallback(() => {

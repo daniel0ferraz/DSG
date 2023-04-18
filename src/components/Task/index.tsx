@@ -93,17 +93,18 @@ export default function Task({dataTask}: ITaskProps) {
               trigger={triggerProps => {
                 return (
                   <>
-                    <Button {...triggerProps} bgColor="transparent">
+                    <Button {...triggerProps} bgColor="#ffffff">
                       <IconOptions />
                     </Button>
                   </>
                 );
               }}>
-              <Popover.Content accessibilityLabel="Options Task" w="56">
-                <Popover.Arrow />
-                <Popover.CloseButton />
-
-                <Popover.Body>
+              <Popover.Content
+                accessibilityLabel="Options Task"
+                w="110"
+                borderWidth={0}
+                backgroundColor="#ffffff">
+                <Popover.Body width={110} backgroundColor="#ffffff">
                   <View
                     flexDirection="column"
                     alignItems="center"

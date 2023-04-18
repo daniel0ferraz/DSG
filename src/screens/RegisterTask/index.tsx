@@ -90,7 +90,6 @@ export default function RegisterTask() {
     } catch (error) {
       setIsLoading(false);
       Alert.alert('Erro ao criar tarefa');
-      console.log(error);
     } finally {
       setIsLoading(false);
     }
