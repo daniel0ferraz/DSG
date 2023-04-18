@@ -38,10 +38,27 @@ export default function Home() {
       );
       console.log('response', filterByUser.length);
 
-      if (filterSelected === 'all-tasks') {
+      /*   if (filterSelected === 'all-tasks') {
         setTasks(response);
       } else {
         setTasks(filterByUser);
+      }
+ */
+
+      if (filterSelected === 'all-tasks') {
+        setTasks(response);
+
+        if (cardFilter === 'Total de tarefas') {
+          setTasks(response);
+        } else {
+          setTasks(response.filter(data => data.status.includes(cardFilter)));
+        }
+      } else {
+        if (cardFilter === 'Total de tarefas') {
+          setTasks(response);
+        } else {
+          setTasks(response.filter(data => data.status.includes(cardFilter)));
+        }
       }
     } catch (error) {
       setIsLoading(false);
@@ -67,7 +84,7 @@ export default function Home() {
       total: tasks.filter(data => data.status === 'Em andamento').length,
     },
     {
-      title: 'concluidas',
+      title: 'Concluidas',
       total: tasks.filter(data => data.status === 'Concluido').length,
     },
   ];
@@ -93,10 +110,12 @@ export default function Home() {
     return <Card dataCard={item} />;
   };
 
+  console.log('CardFilter', cardFilter);
+
   useFocusEffect(
     useCallback(() => {
       fetchTasks();
-    }, [filterSelected]),
+    }, [filterSelected, cardFilter]),
   );
 
   return (
