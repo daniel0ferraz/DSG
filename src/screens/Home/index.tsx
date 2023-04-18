@@ -1,7 +1,7 @@
 import React, {useEffect, useCallback, useState} from 'react';
-import {Box, HStack, Icon, Text} from 'native-base';
+import {Box, HStack, View} from 'native-base';
 
-import {Alert, Dimensions, FlatList, View} from 'react-native';
+import {Alert, Dimensions, FlatList} from 'react-native';
 import Header from '../../components/Header';
 import Filter from '../../components/Filter';
 import Card from '../../components/Card';
@@ -10,6 +10,7 @@ import {getRealm} from '../../databases/realm';
 import {ITask} from '../../@types/ITask';
 import {useFocusEffect} from '@react-navigation/native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Loading from '../../components/Loading';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -33,7 +34,7 @@ export default function Home() {
       const response = realm.objects<ITask[]>('Task').toJSON();
 
       const filterByUser = response.filter(
-        data => data.responsible === 'Daniel',
+        data => data.responsible === userName,
       );
       console.log('response', filterByUser.length);
 

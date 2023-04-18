@@ -28,9 +28,10 @@ import {Alert} from 'react-native';
 
 type ITaskProps = {
   dataTask: ITask;
+  deleteCard: () => Promise<void>;
 };
 
-export default function Task({dataTask}: ITaskProps) {
+export default function Task({dataTask, deleteCard}: ITaskProps) {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
 
   const deleteTask = async () => {
@@ -42,6 +43,10 @@ export default function Task({dataTask}: ITaskProps) {
         );
       });
       Alert.alert('Tarefa Deletada!');
+      navigation.reset({
+        routes: [{name: 'Home'}],
+        index: 0,
+      });
     } catch (error) {
       Alert.alert('Não foi possivel deletar tarefa');
       console.log('erro', error);
@@ -95,7 +100,7 @@ export default function Task({dataTask}: ITaskProps) {
                   </>
                 );
               }}>
-              <Popover.Content accessibilityLabel="Delete Customerd" w="56">
+              <Popover.Content accessibilityLabel="Options Task" w="56">
                 <Popover.Arrow />
                 <Popover.CloseButton />
 
@@ -116,6 +121,10 @@ export default function Task({dataTask}: ITaskProps) {
                     </Button>
 
                     <Button
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="center"
                       onPress={() =>
                         navigation.navigate('AddTask', {dataTask})
                       }>
@@ -125,7 +134,30 @@ export default function Task({dataTask}: ITaskProps) {
                       </Text>
                     </Button>
 
-                    <Button onPress={() => deleteTask()}>
+                    <Button
+                      display="flex"
+                      flexDirection="row"
+                      alignItems="center"
+                      justifyContent="center"
+                      onPress={() => {
+                        Alert.alert(
+                          'Excluir Tarefa',
+                          'Tem certeza que deseja excluir essa tarefa?',
+                          [
+                            {
+                              text: 'Cancelar',
+                              onPress: () => {},
+                              style: 'cancel',
+                            },
+                            {
+                              text: 'Sim',
+                              onPress: async () => {
+                                deleteTask();
+                              },
+                            },
+                          ],
+                        );
+                      }}>
                       <IconTrash />
                       <Text color="#000000" fontSize={14} fontWeight={800}>
                         Excluir

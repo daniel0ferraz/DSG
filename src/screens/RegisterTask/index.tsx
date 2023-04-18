@@ -55,6 +55,11 @@ export default function RegisterTask() {
       description: '',
       status: '',
     } as ITask);
+
+    navigation.reset({
+      routes: [{name: 'AddTask'}],
+      index: 1,
+    });
   };
 
   const handleNewTaskRegister = async () => {
@@ -84,7 +89,6 @@ export default function RegisterTask() {
       });
 
       Alert.alert('Tarefa criada com sucesso!');
-      navigation.goBack();
       clearForm();
     } catch (error) {
       setIsLoading(false);
@@ -92,11 +96,11 @@ export default function RegisterTask() {
       console.log(error);
     } finally {
       setIsLoading(false);
-      realm.close();
     }
   };
 
   const updateTask = async () => {
+    setIsLoading(true);
     const realm = await getRealm();
 
     const data = {
@@ -113,13 +117,12 @@ export default function RegisterTask() {
       });
       Alert.alert('Tarefa atualizada com sucesso!');
 
-      navigation.goBack();
-    } catch (error) {
-      console.log('error atualizar tarefa', error);
-      Alert.alert('Erro ao atualizar tarefa');
-    } finally {
-      realm.close();
       clearForm();
+    } catch (error) {
+      Alert.alert('Erro ao atualizar tarefa');
+      setIsLoading(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -127,7 +130,7 @@ export default function RegisterTask() {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS == 'ios' ? 'padding' : 'height'}>
-        <ScrollView>
+        <ScrollView background={'#3A49F9'}>
           <View
             style={{
               backgroundColor: '#6FEA8B',
@@ -143,7 +146,6 @@ export default function RegisterTask() {
               <Button
                 onPress={() => {
                   clearForm();
-                  navigation.goBack();
                 }}>
                 <IconGoback width={14} height={20} />
               </Button>
@@ -186,6 +188,7 @@ export default function RegisterTask() {
                   dropdownIcon={
                     <Icon mr={3} as={<IconDropDown width={15} height={14} />} />
                   }
+                  onClose={() => setTask({...task, responsible: ''})}
                   onValueChange={(itemValue: string) =>
                     setTask({...task, responsible: itemValue})
                   }>
@@ -216,18 +219,10 @@ export default function RegisterTask() {
 
           <Box
             style={{
-              flex: 1,
-              /*   width: '100%',
-
-          position: 'absolute',
-          bottom: 0,
-          backgroundColor: '#FFFFFF',
-         
-
-          padding: 20, */
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               padding: 20,
+              backgroundColor: '#FFFFFF',
             }}>
             <Box mt={5}>
               <Text fontSize={18} fontWeight={400} color="#333333" mb={5}>
@@ -277,6 +272,7 @@ export default function RegisterTask() {
 
             <Box mt={10}>
               <Buttom
+                isLoading={isLoading}
                 title={routes?.params ? 'Salvar' : 'Criar tarefa'}
                 style={{
                   width: '100%',

@@ -5,15 +5,22 @@ import {
   View,
   Text,
   useTheme,
+  Spinner,
 } from 'native-base';
 
 type Props = IButtonProps & {
   title: string;
   icon?: any;
+  isLoading?: boolean;
 };
 
-export default function Buttom({ title, icon, ...rest }: Props) {
-  const { colors } = useTheme();
+export default function Buttom({
+  title,
+  icon,
+  isLoading = false,
+  ...rest
+}: Props) {
+  const {colors} = useTheme();
 
   return (
     <>
@@ -21,7 +28,6 @@ export default function Buttom({ title, icon, ...rest }: Props) {
         bg="#3A49F9"
         width={'50%'}
         borderRadius={60}
-
         _pressed={{
           bg: 'blue.100',
         }}
@@ -32,6 +38,7 @@ export default function Buttom({ title, icon, ...rest }: Props) {
           justifyContent={'space-between'}>
           {icon && icon}
 
+          {isLoading && <Spinner color={colors.gray[200]} size="sm" />}
           <Text color="white" fontSize="sm" ml={2} fontWeight={700}>
             {title}
           </Text>
