@@ -20,7 +20,9 @@ export default function Filter({title, isActive, type, ...rest}: IFilter) {
         <Text
           color={isActive ? '#121212' : '#666666'}
           fontSize={16}
-          fontWeight={600}>
+          fontFamily="body"
+          fontStyle="normal"
+          fontWeight="600">
           {title}
         </Text>
       </Button>

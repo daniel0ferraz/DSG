@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-const { Screen, Navigator } = createBottomTabNavigator();
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+const {Screen, Navigator} = createBottomTabNavigator();
 
 import IconHomeActive from '../assets/icon-home-active.svg';
 import IconHome from '../assets/icon-home-inative.svg';
@@ -18,10 +18,11 @@ export function TabRoutes() {
     <Navigator
       screenOptions={{
         tabBarShowLabel: false,
-
         headerShown: false,
         tabBarActiveTintColor: '#6fea8b ',
         tabBarInactiveTintColor: '#C4C4C4',
+        tabBarHideOnKeyboard: true,
+
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
           height: 60,
@@ -31,7 +32,7 @@ export function TabRoutes() {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({ size, focused }) =>
+          tabBarIcon: ({size, focused}) =>
             focused ? <IconHomeActive /> : <IconHome />,
         }}
       />
@@ -39,7 +40,7 @@ export function TabRoutes() {
         name="AddTask"
         component={RegisterTask}
         options={{
-          tabBarIcon: ({ size, focused }) =>
+          tabBarIcon: ({size, focused}) =>
             focused ? <IconCheckActive /> : <IconCheck />,
         }}
       />
@@ -48,7 +49,7 @@ export function TabRoutes() {
         name="Notif"
         component={Notification}
         options={{
-          tabBarIcon: ({ size, color }) => (
+          tabBarIcon: ({size, color}) => (
             <IconBell width={size} height={size} />
           ),
         }}

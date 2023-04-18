@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
-import { Box, HStack, Text, Divider, Button, View, Popover, Center } from 'native-base';
-
-
+import React, {useState} from 'react';
+import {
+  Box,
+  HStack,
+  Text,
+  Divider,
+  Button,
+  View,
+  Popover,
+  Center,
+} from 'native-base';
 
 import IconTask from '../../assets/icon-task.svg';
 import IconOptions from '../../assets/icon-options.svg';
@@ -10,55 +17,36 @@ import IconTrash from '../../assets/icon-trash.svg';
 import IconPencil from '../../assets/icon-pencil.svg';
 
 import BtnStatus from '../BtnStatus';
-import { ITask } from '../../@types/ITask';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { getRealm } from '../../databases/realm';
+import {ITask} from '../../@types/ITask';
+import {useNavigation} from '@react-navigation/native';
 
-import { Alert } from 'react-native'
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+
+import {getRealm} from '../../databases/realm';
+
+import {Alert} from 'react-native';
 
 type ITaskProps = {
   dataTask: ITask;
 };
 
-/* 
-title: string;
-responsible: string;
-dateDeadline: string;
-status: 'open' | 'in-progress' | 'done'; */
-
-
-
-function Example() {
-
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  return;
-}
-
-
-export default function Task({ dataTask }: ITaskProps) {
-
-  const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
+export default function Task({dataTask}: ITaskProps) {
+  const navigation = useNavigation<BottomTabNavigationProp<any>>();
 
   const deleteTask = async () => {
     const realm = await getRealm();
     try {
       realm.write(() => {
-        realm.delete(realm.objects<ITask>("Task").filtered(`_id = '${dataTask._id}'`))
-      })
-      Alert.alert("Tarefa Deletada!")
+        realm.delete(
+          realm.objects<ITask>('Task').filtered(`_id = '${dataTask._id}'`),
+        );
+      });
+      Alert.alert('Tarefa Deletada!');
     } catch (error) {
-      Alert.alert("Não foi possivel deletar tarefa")
-      console.log("erro", error)
-    } finally {
-      realm.close()
-
+      Alert.alert('Não foi possivel deletar tarefa');
+      console.log('erro', error);
     }
-  }
-
-
-
+  };
 
   return (
     <View
@@ -71,13 +59,17 @@ export default function Task({ dataTask }: ITaskProps) {
       borderColor="#CCCCCC"
       padding={3}
       borderRadius={10}>
-
       <Box flexDirection="row" alignItems="center">
         <IconTask width={36} height={36} />
 
         <Box flexDirection="column" ml={4}>
-          <Text fontWeight={800} fontSize={14} color="#242736" numberOfLines={2}
-          >
+          <Text
+            fontWeight={800}
+            fontSize={14}
+            color="#242736"
+            numberOfLines={2}
+            width={150}
+            ellipsizeMode="tail">
             {dataTask?.titleTask}
           </Text>
           <Text fontWeight={400} fontSize={10} color={'#666666'}>
@@ -88,22 +80,21 @@ export default function Task({ dataTask }: ITaskProps) {
         </Box>
       </Box>
 
-
       <Box flexDirection="row" alignItems="center">
         <BtnStatus title={dataTask.status} isActive={true} />
 
-
-        <Center >
-          <Box >
-            <Popover trigger={triggerProps => {
-              return (
-                <>
-                  <Button {...triggerProps} bgColor="transparent" >
-                    <IconOptions />
-                  </Button>
-                </>
-              );
-            }}>
+        <Center>
+          <Box>
+            <Popover
+              trigger={triggerProps => {
+                return (
+                  <>
+                    <Button {...triggerProps} bgColor="transparent">
+                      <IconOptions />
+                    </Button>
+                  </>
+                );
+              }}>
               <Popover.Content accessibilityLabel="Delete Customerd" w="56">
                 <Popover.Arrow />
                 <Popover.CloseButton />
@@ -115,36 +106,38 @@ export default function Task({ dataTask }: ITaskProps) {
                       flexDirection="row"
                       alignItems="center"
                       justifyContent="center"
-                      onPress={() => navigation.navigate('AddTask', { dataTask })}>
+                      onPress={() =>
+                        navigation.navigate('AddTask', {dataTask})
+                      }>
                       <IconEye />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>Ver</Text>
+                      <Text color="#000000" fontSize={14} fontWeight={800}>
+                        Ver
+                      </Text>
                     </Button>
 
                     <Button
-                      onPress={() => navigation.navigate('AddTask', { dataTask })}
-                    >
+                      onPress={() =>
+                        navigation.navigate('AddTask', {dataTask})
+                      }>
                       <IconPencil />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>Editar</Text>
+                      <Text color="#000000" fontSize={14} fontWeight={800}>
+                        Editar
+                      </Text>
                     </Button>
 
                     <Button onPress={() => deleteTask()}>
                       <IconTrash />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>Excluir</Text>
+                      <Text color="#000000" fontSize={14} fontWeight={800}>
+                        Excluir
+                      </Text>
                     </Button>
                   </View>
                 </Popover.Body>
-
               </Popover.Content>
             </Popover>
-          </Box >
+          </Box>
         </Center>
       </Box>
-
     </View>
-
-
-
   );
 }
-
-

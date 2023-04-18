@@ -1,14 +1,17 @@
-import React, { useEffect, useCallback, useState } from 'react';
-import { Box, HStack, Icon, Text } from 'native-base';
+import React, {useEffect, useCallback, useState} from 'react';
+import {Box, HStack, Icon, Text} from 'native-base';
 
-import { Alert, FlatList, View } from 'react-native';
+import {Alert, Dimensions, FlatList, View} from 'react-native';
 import Header from '../../components/Header';
 import Filter from '../../components/Filter';
 import Card from '../../components/Card';
 import Task from '../../components/Task';
-import { getRealm } from '../../databases/realm';
-import { ITask } from '../../@types/ITask';
-import { useFocusEffect } from '@react-navigation/native';
+import {getRealm} from '../../databases/realm';
+import {ITask} from '../../@types/ITask';
+import {useFocusEffect} from '@react-navigation/native';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
+
+const {width: screenWidth} = Dimensions.get('window');
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,6 +19,9 @@ export default function Home() {
   const [filterSelected, setFilterSelected] = useState<
     'my-tasks' | 'all-tasks'
   >('my-tasks');
+
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [cardFilter, setCardFilter] = useState('');
 
   const userName = 'Daniel';
 
@@ -26,30 +32,25 @@ export default function Home() {
     try {
       const response = realm.objects<ITask[]>('Task').toJSON();
 
-      const filter = response.filter(data => data.responsible === 'Daniel');
+      const filterByUser = response.filter(
+        data => data.responsible === 'Daniel',
+      );
+      console.log('response', filterByUser.length);
 
       if (filterSelected === 'all-tasks') {
         setTasks(response);
       } else {
-        setTasks(filter);
+        setTasks(filterByUser);
       }
     } catch (error) {
       setIsLoading(false);
       Alert.alert('Não foi possivel buscar tarefas');
       console.log(error);
     } finally {
-      realm.close();
       setIsLoading(false);
+      realm.close();
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchTasks();
-    }, [filterSelected]),
-  );
-
-  // new array  object  {name 'total': 0, 'done': 0, 'pending': 0}
 
   const dataCard = [
     {
@@ -57,7 +58,7 @@ export default function Home() {
       total: tasks.length,
     },
     {
-      title: 'Abertas',
+      title: 'Abertos',
       total: tasks.filter(data => data.status === 'Aberto').length,
     },
     {
@@ -70,7 +71,32 @@ export default function Home() {
     },
   ];
 
-  console.log(tasks.length);
+  const indexToName = (index: number) => {
+    switch (index) {
+      case 0:
+        return 'Total de tarefas';
+        return 'Todas';
+      case 1:
+        return 'Aberto';
+      case 2:
+        return 'Em andamento';
+      case 3:
+        return 'Concluido';
+
+      default:
+        'Todas';
+    }
+  };
+
+  const renderItem = ({item}: any) => {
+    return <Card dataCard={item} />;
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchTasks();
+    }, [filterSelected]),
+  );
 
   return (
     <>
@@ -81,52 +107,87 @@ export default function Home() {
           height: 7,
         }}
       />
-      <Box backgroundColor="#FFFFFF" padding={15} safeArea>
-        <HStack w="100%" alignItems="center" justifyContent="space-between">
-          <Header title={`Olá ${userName}`} subtitle="Tenha um ótimo dia" />
-        </HStack>
 
-        <HStack mt={8}>
-          <Filter
-            type="my-tasks"
-            title="Minhas Tarefas"
-            isActive={filterSelected === 'my-tasks'}
-            onPress={() => setFilterSelected('my-tasks')}
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#FFFFFF',
+        }}>
+        <Box padding={15} safeArea>
+          <HStack w="100%" alignItems="center" justifyContent="space-between">
+            <Header title={`Olá ${userName}`} subtitle="Tenha um ótimo dia" />
+          </HStack>
+
+          <HStack mt={8}>
+            <Filter
+              type="my-tasks"
+              title="Minhas Tarefas"
+              isActive={filterSelected === 'my-tasks'}
+              onPress={() => setFilterSelected('my-tasks')}
+            />
+
+            <Filter
+              type="all-tasks"
+              title="Todas as tarefas"
+              isActive={filterSelected === 'all-tasks'}
+              onPress={() => setFilterSelected('all-tasks')}
+            />
+          </HStack>
+        </Box>
+
+        <Box padding={15} mb={5} backgroundColor="red">
+          <Carousel
+            data={dataCard}
+            renderItem={renderItem}
+            sliderWidth={screenWidth}
+            ItemSeparatorComponent={() => <View style={{width: 15}} />}
+            inactiveSlideScale={1}
+            activeSlideAlignment="start"
+            snapToAlignment="center"
+            itemWidth={screenWidth - 200}
+            layout={'default'}
+            onSnapToItem={index => {
+              setActiveSlide(index);
+              const number = indexToName(index);
+              setCardFilter(String(number));
+            }}
           />
 
-          <Filter
-            type="all-tasks"
-            title="Todas as tarefas"
-            isActive={filterSelected === 'all-tasks'}
-            onPress={() => setFilterSelected('all-tasks')}
+          <Pagination
+            dotsLength={dataCard.length}
+            activeDotIndex={activeSlide}
+            dotContainerStyle={{
+              marginHorizontal: 1,
+            }}
+            containerStyle={{
+              marginTop: -20,
+            }}
+            dotStyle={{
+              width: 25,
+              height: 6,
+              borderRadius: 5,
+              backgroundColor: '#6FEA8B',
+              marginHorizontal: 0,
+            }}
+            inactiveDotStyle={{
+              width: 14,
+              height: 14,
+              borderRadius: 50,
+              backgroundColor: '#D8DEF3',
+            }}
+            inactiveDotScale={0.7}
           />
-        </HStack>
-      </Box>
+        </Box>
 
-      <Box mt={30}>
-        <FlatList
-          style={{ marginLeft: 12 }}
-          removeClippedSubviews={true}
-          data={dataCard}
-          horizontal
-          snapToAlignment="start"
-          scrollEventThrottle={16}
-          decelerationRate="fast"
-          keyExtractor={item => item.title}
-          ItemSeparatorComponent={() => <View style={{ width: 15 }} />}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <Card dataCard={item} />}
-        />
-      </Box>
-
-      <Box mt={30} flex={1} padding={15}>
-        <FlatList
-          data={tasks}
-          keyExtractor={item => item._id}
-          renderItem={({ item }) => <Task dataTask={item} />}
-          ItemSeparatorComponent={() => <View style={{ marginTop: 15 }} />}
-        />
-      </Box>
+        <Box flex={1} mt={-16} padding={15}>
+          <FlatList
+            data={tasks}
+            keyExtractor={item => String(item._id)}
+            renderItem={({item}) => <Task dataTask={item} />}
+            ItemSeparatorComponent={() => <View style={{marginTop: 15}} />}
+          />
+        </Box>
+      </View>
     </>
   );
 }

@@ -4,7 +4,7 @@ import styled, { css } from "styled-components/native";
 import IBtnStatusProps from "./index";
 
 export const Buttom = styled.TouchableOpacity`
-  width: 81px;
+  width: 82px;
   background: #E5EAFC;
   
   border: ${props => props.isActive ? " 1px solid #6FEA8B" : 'none'};
