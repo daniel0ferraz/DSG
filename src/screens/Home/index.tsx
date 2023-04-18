@@ -25,6 +25,25 @@ export default function Home() {
   const [cardFilter, setCardFilter] = useState('');
 
   const userName = 'Daniel';
+  const greetingMessage = () => {
+    let h: number = new Date().toLocaleTimeString('pt-BR', {
+      hour: 'numeric',
+      hour12: false,
+    }); // formato 24 horas (0-23)
+    if (h >= 0 && h <= 5) {
+      // entre meia noite (0h) e 5 da madrugada
+      return 'uma Boa madrugada';
+    } else if (h >= 6 && h < 12) {
+      // entre 6 e 11 da manhã
+      return 'um ótimo dia';
+    } else if (h >= 12 && h < 18) {
+      // entre meio dia (12h) e 17 (5h) da tarde
+      return 'uma ótima tarde';
+    } else if (h >= 18 && h <= 23) {
+      // entre 18 (6h) e 23 (11h) da noite
+      return 'uma ótima noite';
+    }
+  };
 
   const fetchTasks = async () => {
     setIsLoading(true);
@@ -135,7 +154,10 @@ export default function Home() {
         }}>
         <Box padding={15} safeArea>
           <HStack w="100%" alignItems="center" justifyContent="space-between">
-            <Header title={`Olá ${userName}`} subtitle="Tenha um ótimo dia" />
+            <Header
+              title={`Olá ${userName}!`}
+              subtitle={`Tenha ${greetingMessage()}`}
+            />
           </HStack>
 
           <HStack mt={8}>

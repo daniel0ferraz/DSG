@@ -44,9 +44,6 @@ export default function RegisterTask() {
   const users = ['Daniel', 'Gabriel ', 'Juliano', 'Carlos', 'Tiago'];
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log('task', task);
-  //console.log('taskData', taskData);
-
   const clearForm = () => {
     setTask({
       titleTask: '',

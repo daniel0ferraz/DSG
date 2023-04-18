@@ -28,10 +28,9 @@ import {Alert} from 'react-native';
 
 type ITaskProps = {
   dataTask: ITask;
-  deleteCard: () => Promise<void>;
 };
 
-export default function Task({dataTask, deleteCard}: ITaskProps) {
+export default function Task({dataTask}: ITaskProps) {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
 
   const deleteTask = async () => {
@@ -105,40 +104,50 @@ export default function Task({dataTask, deleteCard}: ITaskProps) {
                 <Popover.CloseButton />
 
                 <Popover.Body>
-                  <View>
+                  <View
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="center">
                     <Button
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="center"
                       onPress={() =>
                         navigation.navigate('AddTask', {dataTask})
                       }>
-                      <IconEye />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>
-                        Ver
-                      </Text>
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center">
+                        <IconEye />
+                        <Text
+                          ml={3}
+                          color="#000000"
+                          fontSize={14}
+                          fontWeight={800}>
+                          Ver
+                        </Text>
+                      </Box>
                     </Button>
 
                     <Button
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="center"
                       onPress={() =>
                         navigation.navigate('AddTask', {dataTask})
                       }>
-                      <IconPencil />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>
-                        Editar
-                      </Text>
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="center">
+                        <IconPencil />
+                        <Text
+                          ml={3}
+                          color="#000000"
+                          fontSize={14}
+                          fontWeight={800}>
+                          Editar
+                        </Text>
+                      </Box>
                     </Button>
 
                     <Button
-                      display="flex"
-                      flexDirection="row"
-                      alignItems="center"
-                      justifyContent="center"
                       onPress={() => {
                         Alert.alert(
                           'Excluir Tarefa',
@@ -158,10 +167,20 @@ export default function Task({dataTask, deleteCard}: ITaskProps) {
                           ],
                         );
                       }}>
-                      <IconTrash />
-                      <Text color="#000000" fontSize={14} fontWeight={800}>
-                        Excluir
-                      </Text>
+                      <Box
+                        display="flex"
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="center">
+                        <IconTrash />
+                        <Text
+                          ml={3}
+                          color="#000000"
+                          fontSize={14}
+                          fontWeight={800}>
+                          Excluir
+                        </Text>
+                      </Box>
                     </Button>
                   </View>
                 </Popover.Body>
