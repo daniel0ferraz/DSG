@@ -24,8 +24,8 @@ import {ITask} from '../../@types/ITask';
 import {getRealm} from '../../databases/realm';
 import uuid from 'react-native-uuid';
 import {useNavigation, useRoute} from '@react-navigation/native';
-
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {maskDate} from '../../utils/mask';
 
 export default function RegisterTask() {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
@@ -211,7 +211,13 @@ export default function RegisterTask() {
                   fontWeight={700}
                   fontSize={16}
                   value={task.dateDeadline || taskData?.dateDeadline}
-                  onChangeText={text => setTask({...task, dateDeadline: text})}
+                  onChangeText={text => {
+                    const value = maskDate(text);
+                    setTask({...task, dateDeadline: value});
+                  }}
+                  keyboardType="numeric"
+                  maxLength={10}
+                  cursorColor={'#FFFFFF'}
                 />
               </Box>
             </Stack>
