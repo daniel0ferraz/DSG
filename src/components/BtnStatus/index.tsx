@@ -1,9 +1,11 @@
 import React from 'react';
 import {Text} from 'native-base';
 
-import {View, TouchableOpacityProps} from 'react-native';
-
-import {Buttom} from './styles';
+import {
+  TouchableOpacityProps,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 
 export type IBtnStatusProps = TouchableOpacityProps & {
   title: string;
@@ -12,10 +14,22 @@ export type IBtnStatusProps = TouchableOpacityProps & {
 
 export default function BtnStatus({title, isActive, ...rest}: IBtnStatusProps) {
   return (
-    <Buttom {...rest} isActive={isActive}>
+    <TouchableOpacity
+      {...rest}
+      style={{
+        width: 82,
+        backgroundColor: '#E5EAFC',
+        borderWidth: isActive ? 1 : 0,
+        gap: 10,
+        borderRadius: 75,
+        borderColor: '#6FEA8B',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 8,
+      }}>
       <Text fontSize={8} fontWeight="800">
         {title}
       </Text>
-    </Buttom>
+    </TouchableOpacity>
   );
 }

@@ -4,6 +4,7 @@ import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import {ITask} from '../../@types/ITask';
 import {getRealm} from '../../databases/realm';
 import uuid from 'react-native-uuid';
+import Loading from '../../components/Loading';
 
 export default function Notification() {
   let task: Realm.Results<ITask>;
@@ -60,13 +61,14 @@ export default function Notification() {
   return (
     <>
       <View style={styles.container}>
-        <Text style={styles.text}>Hello from Home</Text>
+        {/*  <Text style={styles.text}>Hello from Home</Text>
         <TouchableOpacity onPress={getTask}>
           <Text style={styles.text}>Get Task</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={updateTask}>
           <Text style={styles.text}>Update Task</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <Loading />
       </View>
     </>
   );

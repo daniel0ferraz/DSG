@@ -26,6 +26,7 @@ import uuid from 'react-native-uuid';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {maskDate} from '../../utils/mask';
+import Loading from '../../components/Loading';
 
 export default function RegisterTask() {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
@@ -73,6 +74,8 @@ export default function RegisterTask() {
         Alert.alert('Preencha todos os campos!');
         return;
       }
+
+      setIsLoading(true);
 
       realm.write(() => {
         realm.create('Task', {
@@ -134,6 +137,7 @@ export default function RegisterTask() {
               height: 7,
             }}
           />
+
           <Box backgroundColor="#3A49F9" padding={5} height={420} safeArea>
             <Box
               flexDirection="row"
@@ -286,6 +290,21 @@ export default function RegisterTask() {
               />
             </Box>
           </Box>
+
+          {isLoading && (
+            <>
+              <View
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  position: 'absolute',
+                }}>
+                <Loading />
+              </View>
+            </>
+          )}
         </ScrollView>
       </KeyboardAvoidingView>
     </>
