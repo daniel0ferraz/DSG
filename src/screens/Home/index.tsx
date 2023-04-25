@@ -1,5 +1,5 @@
 import React, {useEffect, useCallback, useState} from 'react';
-import {Box, HStack, View} from 'native-base';
+import {Box, Center, HStack, Text, View} from 'native-base';
 
 import {Alert, Dimensions, FlatList} from 'react-native';
 import Header from '../../components/Header';
@@ -228,6 +228,13 @@ export default function Home() {
             keyExtractor={item => String(item._id)}
             renderItem={({item}) => <Task dataTask={item} />}
             ItemSeparatorComponent={() => <View style={{marginTop: 15}} />}
+            ListEmptyComponent={() => (
+              <>
+                <Center mt={50}>
+                  <Text fontSize="lg">Nenhuma tarefa registrada.</Text>
+                </Center>
+              </>
+            )}
           />
         </Box>
       </View>
