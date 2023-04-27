@@ -27,23 +27,27 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {maskDate} from '../../utils/mask';
 import Loading from '../../components/Loading';
+import BtnGroup from '../../components/BtnGroup';
 
 export default function RegisterTask() {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
 
   const routes = useRoute<any>();
   const taskData = routes?.params?.dataTask as ITask;
+  const [statusFilter, setStatusFilter] = useState<string | ''>(
+    taskData?.status,
+  );
 
   const [task, setTask] = useState({
     titleTask: '' || taskData?.titleTask,
     responsible: '' || taskData?.responsible,
     dateDeadline: '' || taskData?.dateDeadline,
     description: '' || taskData?.description,
-    status: '' || taskData?.status,
+    status: statusFilter || taskData?.status,
   } as ITask);
-
+  
   const users = ['Daniel', 'Gabriel ', 'Juliano', 'Carlos', 'Tiago'];
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
 
   const clearForm = () => {
     setTask({
@@ -53,6 +57,8 @@ export default function RegisterTask() {
       description: '',
       status: '',
     } as ITask);
+
+    setStatusFilter('');
 
     navigation.reset({
       routes: [{name: 'AddTask'}],
@@ -69,7 +75,7 @@ export default function RegisterTask() {
         !task.responsible ||
         !task.dateDeadline ||
         !task.description ||
-        !task.status
+        !statusFilter
       ) {
         Alert.alert('Preencha todos os campos!');
         return;
@@ -84,7 +90,7 @@ export default function RegisterTask() {
           responsible: task.responsible,
           dateDeadline: task.dateDeadline,
           description: task.description,
-          status: task.status,
+          status: statusFilter,
         });
       });
 
@@ -108,7 +114,7 @@ export default function RegisterTask() {
       responsible: task.responsible,
       dateDeadline: task.dateDeadline,
       description: task.description,
-      status: task.status,
+      status: statusFilter,
     };
     try {
       realm.write(() => {
@@ -250,28 +256,9 @@ export default function RegisterTask() {
                 Status
               </Text>
               <HStack alignItems="center" justifyContent="space-between">
-                <BtnStatus
-                  title="Aberto"
-                  onPress={() => setTask({...task, status: 'Aberto'})}
-                  isActive={
-                    task.status === 'Aberto' || taskData?.status === 'Aberto'
-                  }
-                />
-                <BtnStatus
-                  onPress={() => setTask({...task, status: 'Em andamento'})}
-                  title="Em andamento"
-                  isActive={
-                    task.status === 'Em andamento' ||
-                    taskData?.status === 'Em andamento'
-                  }
-                />
-                <BtnStatus
-                  onPress={() => setTask({...task, status: 'Concluido'})}
-                  title="Concluido"
-                  isActive={
-                    task.status === 'Concluido' ||
-                    taskData?.status === 'Concluido'
-                  }
+                <BtnGroup
+                  selectedStatus={statusFilter}
+                  setStatus={setStatusFilter}
                 />
               </HStack>
             </Box>
