@@ -43,10 +43,9 @@ export default function BtnGroup({selectedStatus, setStatus}: IBtnProps) {
               marginRight: 22,
             }}>
             <BtnStatus
-              onPress={() => {
-                selectStatus(item);
-                console.log(selectedStatus === item.name);
-              }}
+              onPress={() => 
+                selectStatus(item)
+              }
               title={item.name}
               isActive={selectedStatus === item.name}
             />

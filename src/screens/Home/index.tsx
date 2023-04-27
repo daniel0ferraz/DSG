@@ -32,7 +32,7 @@ export default function Home() {
     }); // formato 24 horas (0-23)
     if (h >= 0 && h <= 5) {
       // entre meia noite (0h) e 5 da madrugada
-      return 'uma Boa madrugada';
+      return 'uma boa madrugada';
     } else if (h >= 6 && h < 12) {
       // entre 6 e 11 da manhã
       return 'um ótimo dia';
@@ -55,15 +55,7 @@ export default function Home() {
       const filterByUser = response.filter(
         data => data.responsible === userName,
       );
-      console.log('response', filterByUser.length);
-
-      /*   if (filterSelected === 'all-tasks') {
-        setTasks(response);
-      } else {
-        setTasks(filterByUser);
-      }
- */
-
+      
       if (filterSelected === 'all-tasks') {
         setTasks(response);
 
