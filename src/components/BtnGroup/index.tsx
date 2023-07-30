@@ -39,13 +39,12 @@ export default function BtnGroup({selectedStatus, setStatus}: IBtnProps) {
       {dataStatus.map(item => (
         <>
           <View
+            key={item.id}
             style={{
               marginRight: 22,
             }}>
             <BtnStatus
-              onPress={() => 
-                selectStatus(item)
-              }
+              onPress={() => selectStatus(item)}
               title={item.name}
               isActive={selectedStatus === item.name}
             />

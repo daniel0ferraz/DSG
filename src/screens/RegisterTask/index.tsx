@@ -21,13 +21,14 @@ import IconDropDown from '../../assets/icon-dropdown.svg';
 import Buttom from '../../components/Buttom';
 import BtnStatus from '../../components/BtnStatus';
 import {ITask} from '../../@types/ITask';
-import {getRealm} from '../../databases/realm';
+import {useRealm} from '../../databases/realm';
 import uuid from 'react-native-uuid';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {maskDate} from '../../utils/mask';
 import Loading from '../../components/Loading';
 import BtnGroup from '../../components/BtnGroup';
+import {TaskSchema} from '../../databases/schemas/TaskSchema';
 
 export default function RegisterTask() {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
@@ -45,9 +46,10 @@ export default function RegisterTask() {
     description: '' || taskData?.description,
     status: statusFilter || taskData?.status,
   } as ITask);
-  
+
   const users = ['Daniel', 'Gabriel ', 'Juliano', 'Carlos', 'Tiago'];
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
+  const realm = useRealm();
 
   const clearForm = () => {
     setTask({
@@ -60,15 +62,11 @@ export default function RegisterTask() {
 
     setStatusFilter('');
 
-    navigation.reset({
-      routes: [{name: 'AddTask'}],
-      index: 1,
-    });
+    navigation.goBack();
   };
 
   const handleNewTaskRegister = async () => {
-    setIsLoading(true);
-    const realm = await getRealm();
+    console.log(task);
     try {
       if (
         !task.titleTask ||
@@ -84,32 +82,35 @@ export default function RegisterTask() {
       setIsLoading(true);
 
       realm.write(() => {
-        realm.create('Task', {
-          _id: uuid.v4(),
-          titleTask: task.titleTask,
-          responsible: task.responsible,
-          dateDeadline: task.dateDeadline,
-          description: task.description,
-          status: statusFilter,
-        });
+        realm.create(
+          'task',
+          TaskSchema.generate({
+            titleTask: task.titleTask,
+            responsible: task.responsible,
+            dateDeadline: maskDate(task.dateDeadline),
+            description: task.description,
+            status: statusFilter,
+          }),
+        );
       });
 
-      Alert.alert('Tarefa criada com sucesso!');
       clearForm();
     } catch (error) {
       setIsLoading(false);
       Alert.alert('Erro ao criar tarefa');
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1800);
     }
   };
 
+  /* 
   const updateTask = async () => {
-    setIsLoading(true);
     const realm = await getRealm();
 
     const data = {
-      _id: taskData._id,
+      id: taskData.id,
       titleTask: task.titleTask,
       responsible: task.responsible,
       dateDeadline: task.dateDeadline,
@@ -117,19 +118,22 @@ export default function RegisterTask() {
       status: statusFilter,
     };
     try {
+      setIsLoading(true);
       realm.write(() => {
         realm.create('Task', data, Realm.UpdateMode.Modified);
       });
-      Alert.alert('Tarefa atualizada com sucesso!');
+      //Alert.alert('Tarefa atualizada com sucesso!');
 
-      clearForm();
+      // clearForm();
     } catch (error) {
       Alert.alert('Erro ao atualizar tarefa');
       setIsLoading(false);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1800);
     }
-  };
+  }; */
 
   return (
     <>

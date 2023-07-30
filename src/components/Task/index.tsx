@@ -22,8 +22,8 @@ import {useNavigation} from '@react-navigation/native';
 
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 
-import {getRealm} from '../../databases/realm';
-
+import {useRealm} from '../../databases/realm';
+s;
 import {Alert} from 'react-native';
 
 type ITaskProps = {
@@ -33,19 +33,20 @@ type ITaskProps = {
 export default function Task({dataTask}: ITaskProps) {
   const navigation = useNavigation<BottomTabNavigationProp<any>>();
 
+  const realm = useRealm();
+
   const deleteTask = async () => {
-    const realm = await getRealm();
     try {
       realm.write(() => {
         realm.delete(
-          realm.objects<ITask>('Task').filtered(`_id = '${dataTask._id}'`),
+          realm.objects<ITask>('task').filtered(`id = '${dataTask.id}'`),
         );
       });
       Alert.alert('Tarefa Deletada!');
-      navigation.reset({
+      /* navigation.reset({
         routes: [{name: 'Home'}],
         index: 0,
-      });
+      }); */
     } catch (error) {
       Alert.alert('Não foi possivel deletar tarefa');
       console.log('erro', error);

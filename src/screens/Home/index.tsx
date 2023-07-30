@@ -6,11 +6,12 @@ import Header from '../../components/Header';
 import Filter from '../../components/Filter';
 import Card from '../../components/Card';
 import Task from '../../components/Task';
-import {getRealm} from '../../databases/realm';
+import {useQuery, useRealm} from '../../databases/realm';
 import {ITask} from '../../@types/ITask';
 import {useFocusEffect} from '@react-navigation/native';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Loading from '../../components/Loading';
+import {TaskSchema} from '../../databases/schemas/TaskSchema';
 
 const {width: screenWidth} = Dimensions.get('window');
 
@@ -23,6 +24,9 @@ export default function Home() {
 
   const [activeSlide, setActiveSlide] = useState(0);
   const [cardFilter, setCardFilter] = useState('');
+
+  const task = useQuery(TaskSchema);
+  const realm = useRealm();
 
   const userName = 'Daniel';
   const greetingMessage = () => {
@@ -47,15 +51,16 @@ export default function Home() {
 
   const fetchTasks = async () => {
     setIsLoading(true);
-    const realm = await getRealm();
 
     try {
-      const response = realm.objects<ITask[]>('Task').toJSON();
+      const response = task.toJSON();
+
+      console.log('response:', response);
 
       const filterByUser = response.filter(
         data => data.responsible === userName,
       );
-      
+
       if (filterSelected === 'all-tasks') {
         setTasks(response);
 
@@ -80,7 +85,6 @@ export default function Home() {
       console.log(error);
     } finally {
       setIsLoading(false);
-      realm.close();
     }
   };
 
@@ -124,12 +128,15 @@ export default function Home() {
     return <Card dataCard={item} />;
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchTasks();
-    }, [filterSelected, cardFilter]),
-  );
+  useEffect(() => {
+    fetchTasks();
+  }, [filterSelected, cardFilter]);
 
+  useEffect(() => {
+    realm.addListener('change', fetchTasks);
+
+    return () => realm.removeListener('change', fetchTasks);
+  }, []);
   return (
     <>
       <View
@@ -217,7 +224,7 @@ export default function Home() {
         <Box flex={1} mt={-16} padding={15}>
           <FlatList
             data={tasks}
-            keyExtractor={item => String(item._id)}
+            keyExtractor={item => String(item.id)}
             renderItem={({item}) => <Task dataTask={item} />}
             ItemSeparatorComponent={() => <View style={{marginTop: 15}} />}
             ListEmptyComponent={() => (
